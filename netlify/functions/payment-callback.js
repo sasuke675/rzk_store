@@ -52,6 +52,8 @@ export async function handler(event, context) {
     };
   }
 
+  console.log('Parsed Callback Body:', JSON.stringify(body));
+
   // Ambil nominal dari payload JSON dari berbagai kemungkinan key name
   let amount = body.amount || body.nominal || body.value || body.price;
   
@@ -70,9 +72,10 @@ export async function handler(event, context) {
   }
 
   if (!amount) {
-    // Cek apakah ini adalah request "Tes Koneksi" (biasanya tidak memiliki nominal pembayaran)
+    // Cek apakah ini adalah request "Tes Koneksi" (biasanya tidak memiliki nominal pembayaran atau pesannya kosong/hanya ping)
     const isTestRequest = 
-      (rawText && /test|tes|ping|koneksi|hello|halo|notifsync/i.test(String(rawText))) ||
+      !rawText || // Jika tidak ada teks sama sekali, asumsikan ini ping tes koneksi
+      /test|tes|ping|koneksi|hello|halo|notifsync/i.test(String(rawText)) ||
       (body && body.title && /test|tes|ping|koneksi|hello|halo|notifsync/i.test(String(body.title))) ||
       (body && body.message && /test|tes|ping|koneksi|hello|halo|notifsync/i.test(String(body.message)));
 
