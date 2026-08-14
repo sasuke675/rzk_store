@@ -32,7 +32,14 @@ import './App.css';
 const DEFAULT_STATIC_QRIS = '00020101021126570011ID.DANA.WWW011893600915302634402802090263440280303UMI51440014ID.CO.QRIS.WWW0215ID10265391682640303UMI5204481453033605802ID5908rz store6015Kab. Ogan Komer610532159630485BE';
 
 function App() {
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState(() => {
+    try {
+      const cached = localStorage.getItem('rzk_cached_products');
+      return cached ? JSON.parse(cached) : [];
+    } catch (e) {
+      return [];
+    }
+  });
   
   // Navigation Tabs: 'catalog' | 'my-orders' | 'admin-dashboard' | 'admin-products' | 'admin-transactions'
   const [currentTab, setCurrentTab] = useState('catalog'); 
@@ -290,7 +297,10 @@ function App() {
         .select('*')
         .order('price', { ascending: true });
       if (error) throw error;
-      setProducts(data || []);
+      
+      const productsData = data || [];
+      setProducts(productsData);
+      localStorage.setItem('rzk_cached_products', JSON.stringify(productsData));
     } catch (err) {
       console.error('Error fetching products:', err.message);
     }
