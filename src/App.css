@@ -606,11 +606,17 @@
   color: white;
 }
 
-/* Mobile layout header and bottom navigation default hidden */
+/* Mobile layout header, drawer and overlay default hidden */
 .mobile-header {
   display: none;
 }
 .mobile-bottom-nav {
+  display: none;
+}
+.mobile-drawer {
+  display: none;
+}
+.mobile-drawer-overlay {
   display: none;
 }
 .banner-welcome-actions {
@@ -692,6 +698,7 @@
 
   /* Mobile Drawer Overlay / Backdrop */
   .mobile-drawer-overlay {
+    display: block;
     position: fixed;
     top: 0;
     left: 0;
