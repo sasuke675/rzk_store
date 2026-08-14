@@ -406,6 +406,17 @@ function App() {
 
       if (txErr) throw txErr;
 
+      // Kirim notifikasi Telegram secara asynchronous (non-blocking)
+      fetch('/.netlify/functions/telegram-bot', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'send_notification',
+          transaction: newTx,
+          product_name: checkoutProduct.name
+        })
+      }).catch(err => console.error('Gagal mengirim notifikasi Telegram:', err));
+
       // Simpan ID transaksi ini ke daftar pembelian lokal pembeli
       const localTxIds = JSON.parse(localStorage.getItem('rzk_buyer_txs') || '[]');
       localTxIds.push(newTx.id);
