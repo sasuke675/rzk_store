@@ -77,6 +77,7 @@ function App() {
   const [qrisQrCodeUrl, setQrisQrCodeUrl] = useState('');
   const [vmessQrCodeUrl, setVmessQrCodeUrl] = useState('');
   const [copiedVmess, setCopiedVmess] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   // Admin Dashboard State
   const [adminProducts, setAdminProducts] = useState([]);
@@ -572,13 +573,25 @@ function App() {
     <div className="app-layout">
       {/* ================= MOBILE HEADER ================= */}
       <header className="mobile-header">
-        <div className="mobile-header-logo">
-          <ShoppingBag size={22} />
-          <span>RZK STORE</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <button className="mobile-menu-btn" onClick={() => setIsDrawerOpen(true)}>
+            <Menu size={22} />
+          </button>
+          <div className="mobile-header-logo">
+            <ShoppingBag size={20} />
+            <span>RZK STORE</span>
+          </div>
         </div>
-        <div className="mobile-header-user">
-          {buyerName ? buyerName.charAt(0).toUpperCase() : 'U'}
-        </div>
+        
+        {isAdminMode && adminAuthenticated ? (
+          <button className="btn btn-danger btn-small" onClick={handleAdminLogout} style={{ padding: '0.35rem 0.65rem' }}>
+            Keluar
+          </button>
+        ) : (
+          <div className="mobile-header-user">
+            {buyerName ? buyerName.charAt(0).toUpperCase() : 'U'}
+          </div>
+        )}
       </header>
 
       {/* ================= SIDEBAR MENU ================= */}
@@ -1314,51 +1327,99 @@ function App() {
 
       </div>
 
-      {/* ================= MOBILE BOTTOM NAVIGATION ================= */}
-      <nav className="mobile-bottom-nav">
-        {!isAdminMode ? (
-          <>
-            <button 
-              className={`mobile-nav-item ${currentTab === 'catalog' ? 'active' : ''}`}
-              onClick={() => handleSidebarClick('catalog')}
-            >
-              <ShoppingCart size={20} />
-              <span>Katalog</span>
-            </button>
-            <button 
-              className={`mobile-nav-item ${currentTab === 'my-orders' ? 'active' : ''}`}
-              onClick={() => handleSidebarClick('my-orders')}
-            >
-              <History size={20} />
-              <span>Pesanan Saya</span>
-            </button>
-          </>
-        ) : (
-          <>
-            <button 
-              className={`mobile-nav-item ${currentTab === 'admin-dashboard' ? 'active' : ''}`}
-              onClick={() => handleSidebarClick('admin-dashboard')}
-            >
-              <Settings size={20} />
-              <span>Dashboard</span>
-            </button>
-            <button 
-              className={`mobile-nav-item ${currentTab === 'admin-products' ? 'active' : ''}`}
-              onClick={() => handleSidebarClick('admin-products')}
-            >
-              <Plus size={20} />
-              <span>Produk</span>
-            </button>
-            <button 
-              className={`mobile-nav-item ${currentTab === 'admin-transactions' ? 'active' : ''}`}
-              onClick={() => handleSidebarClick('admin-transactions')}
-            >
-              <History size={20} />
-              <span>Transaksi</span>
-            </button>
-          </>
+      {/* ================= MOBILE DRAWER BACKDROP & CONTENT ================= */}
+      <div 
+        className={`mobile-drawer-overlay ${isDrawerOpen ? 'open' : ''}`}
+        onClick={() => setIsDrawerOpen(false)}
+      />
+      <aside className={`mobile-drawer ${isDrawerOpen ? 'open' : ''}`}>
+        {/* User Profile Header in Drawer */}
+        <div className="drawer-user-header">
+          <div className="drawer-avatar">
+            {buyerName ? buyerName.charAt(0).toUpperCase() : 'U'}
+          </div>
+          <div className="drawer-user-info">
+            <h4>{buyerName || 'Tamu / Pembeli'}</h4>
+            <p>{buyerEmail || 'Toko Internet & VPN'}</p>
+          </div>
+        </div>
+
+        {/* Belanja Navigation Section */}
+        <div className="sidebar-menu-group">
+          <div className="sidebar-menu-label">Belanja</div>
+          <ul className="sidebar-menu-list">
+            <li>
+              <button 
+                className={`sidebar-item ${currentTab === 'catalog' ? 'active' : ''}`}
+                onClick={() => {
+                  handleSidebarClick('catalog');
+                  setIsDrawerOpen(false);
+                }}
+              >
+                <ShoppingCart size={18} />
+                <span>Katalog Produk</span>
+              </button>
+            </li>
+            <li>
+              <button 
+                className={`sidebar-item ${currentTab === 'my-orders' ? 'active' : ''}`}
+                onClick={() => {
+                  handleSidebarClick('my-orders');
+                  setIsDrawerOpen(false);
+                }}
+              >
+                <History size={18} />
+                <span>Riwayat Pesanan</span>
+              </button>
+            </li>
+          </ul>
+        </div>
+
+        {/* Seller Portal (Admin) Section */}
+        {isAdminMode && (
+          <div className="sidebar-menu-group" style={{ marginTop: '1.5rem' }}>
+            <div className="sidebar-menu-label">Seller Portal</div>
+            <ul className="sidebar-menu-list">
+              <li>
+                <button 
+                  className={`sidebar-item ${currentTab === 'admin-dashboard' ? 'active' : ''}`}
+                  onClick={() => {
+                    handleSidebarClick('admin-dashboard');
+                    setIsDrawerOpen(false);
+                  }}
+                >
+                  <Settings size={18} />
+                  <span>Dashboard Seller</span>
+                </button>
+              </li>
+              <li>
+                <button 
+                  className={`sidebar-item ${currentTab === 'admin-products' ? 'active' : ''}`}
+                  onClick={() => {
+                    handleSidebarClick('admin-products');
+                    setIsDrawerOpen(false);
+                  }}
+                >
+                  <Plus size={18} />
+                  <span>Produk Saya</span>
+                </button>
+              </li>
+              <li>
+                <button 
+                  className={`sidebar-item ${currentTab === 'admin-transactions' ? 'active' : ''}`}
+                  onClick={() => {
+                    handleSidebarClick('admin-transactions');
+                    setIsDrawerOpen(false);
+                  }}
+                >
+                  <History size={18} />
+                  <span>Kelola Pesanan</span>
+                </button>
+              </li>
+            </ul>
+          </div>
         )}
-      </nav>
+      </aside>
     </div>
   );
 }
