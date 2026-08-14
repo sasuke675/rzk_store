@@ -1,0 +1,97 @@
+/* Fun & Premium Light Theme - RZK Store */
+:root {
+  --font-heading: 'Outfit', sans-serif;
+  --font-body: 'Outfit', sans-serif;
+
+  /* Color Palette (Light Mode - Fun & Clean) */
+  --bg-main: #f4f6fa;
+  --bg-sidebar: #ffffff;
+  --bg-card: #ffffff;
+  --bg-card-hover: #fafbfc;
+  --border-color: #eef2f7;
+  --border-active: #0066fe;
+  
+  /* Primary Vibrant Blue */
+  --color-primary-start: #0066fe;
+  --color-primary-end: #004bca;
+  --color-banner-start: #0f68ff;
+  --color-banner-end: #004dcb;
+
+  /* Functional Colors (Solid & Soft Pastels) */
+  --color-success: #10b981;
+  --color-success-bg: #e6fcf5;
+  --color-warning: #f59e0b;
+  --color-warning-bg: #fef8eb;
+  --color-danger: #ef4444;
+  --color-danger-bg: #fef2f2;
+  --color-info: #06b6d4;
+  --color-info-bg: #ecfeff;
+  
+  --text-main: #1e293b;
+  --text-muted: #64748b;
+  --text-white: #ffffff;
+  
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 10px 25px -5px rgba(50, 50, 93, 0.07), 0 8px 16px -6px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 20px 40px -15px rgba(50, 50, 93, 0.1), 0 15px 25px -10px rgba(0, 0, 0, 0.07);
+
+  --transition-smooth: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  --border-radius-lg: 16px;
+  --border-radius-xl: 24px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+button, input, textarea, select {
+  font-family: inherit;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-main);
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Base Spinner */
+@keyframes spinner {
+  to { transform: rotate(360deg); }
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(0, 102, 254, 0.1);
+  border-radius: 50%;
+  border-top-color: var(--color-primary-start);
+  animation: spinner 0.8s linear infinite;
+}
