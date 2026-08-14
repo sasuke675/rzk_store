@@ -78,6 +78,7 @@ function App() {
   const [vmessQrCodeUrl, setVmessQrCodeUrl] = useState('');
   const [copiedVmess, setCopiedVmess] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [loadingManualVerify, setLoadingManualVerify] = useState(false);
 
   // Admin Dashboard State
   const [adminProducts, setAdminProducts] = useState([]);
@@ -447,6 +448,66 @@ function App() {
       alert('Gagal memproses transaksi: ' + err.message);
     } finally {
       setLoadingCheckout(false);
+    }
+  };
+
+  const handleVerifyPaymentManually = async () => {
+    if (!activeTx) return;
+    setLoadingManualVerify(true);
+    try {
+      const { data, error } = await supabase
+        .from('transactions')
+        .select('*')
+        .eq('id', activeTx.id)
+        .single();
+      
+      if (error) throw error;
+
+      if (data && data.status === 'paid') {
+        setTxStatus('paid');
+        loadMyOrders();
+        fetchSuccessProductConfig(data.product_id);
+      } else {
+        alert('Pembayaran belum terverifikasi oleh sistem. Silakan tunggu beberapa saat atau coba lagi.');
+      }
+    } catch (err) {
+      console.error('Error manual verification:', err.message);
+      alert('Gagal memverifikasi: ' + err.message);
+    } finally {
+      setLoadingManualVerify(false);
+    }
+  };
+
+  const handleCancelTransaction = async () => {
+    if (!activeTx) return;
+    if (!confirm('Apakah Anda yakin ingin membatalkan pesanan ini?')) return;
+    
+    try {
+      const { error } = await supabase
+        .from('transactions')
+        .update({ 
+          status: 'expired',
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', activeTx.id);
+
+      if (error) throw error;
+
+      setTxStatus('expired');
+      loadMyOrders();
+
+      // Kirim sinyal ke Telegram Bot untuk menandai dibatalkan dan menghapus tombol
+      fetch('/.netlify/functions/telegram-bot', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'cancel_notification',
+          transaction_id: activeTx.id
+        })
+      }).catch(err => console.error('Failed to send cancel signal to Telegram:', err));
+
+    } catch (err) {
+      alert('Gagal membatalkan pesanan: ' + err.message);
     }
   };
 
@@ -1223,8 +1284,26 @@ function App() {
                   Menunggu Pembayaran Masuk... ({formatTime(timeLeft)})
                 </div>
 
-                <div style={{ background: '#f8fafc', padding: '0.85rem', borderRadius: '10px', fontSize: '0.75rem', color: 'var(--text-muted)', textAlign: 'left', border: '1px solid var(--border-color)', width: '100%' }}>
+                <div style={{ background: '#f8fafc', padding: '0.85rem', borderRadius: '10px', fontSize: '0.75rem', color: 'var(--text-muted)', textAlign: 'left', border: '1px solid var(--border-color)', width: '100%', marginBottom: '1.25rem' }}>
                   💡 <strong>PENTING:</strong> Bayar nominal <strong>PERSIS</strong> sesuai harga di atas. Jika berbeda, verifikasi otomatis akan gagal.
+                </div>
+
+                <div className="qris-actions" style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', width: '100%' }}>
+                  <button 
+                    className="btn btn-primary" 
+                    style={{ width: '100%', padding: '0.75rem' }}
+                    onClick={handleVerifyPaymentManually}
+                    disabled={loadingManualVerify}
+                  >
+                    {loadingManualVerify ? <RefreshCw className="spinner" /> : 'KONFIRMASI PEMBAYARAN'}
+                  </button>
+                  <button 
+                    className="btn btn-secondary" 
+                    style={{ width: '100%', padding: '0.75rem', color: 'var(--color-danger)', borderColor: 'rgba(239, 68, 68, 0.2)' }}
+                    onClick={handleCancelTransaction}
+                  >
+                    BATALKAN PESANAN
+                  </button>
                 </div>
               </div>
             </div>

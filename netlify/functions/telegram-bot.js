@@ -112,6 +112,68 @@ export async function handler(event, context) {
     }
   }
 
+  // 1.B. SKENARIO: Pembatalan Notifikasi (dipicu dari Frontend)
+  if (body.action === 'cancel_notification') {
+    const { transaction_id } = body;
+    if (!transaction_id) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: 'Bad Request: Missing transaction_id' }),
+      };
+    }
+
+    // Ambil data transaksi dari Supabase untuk di-edit pesannya
+    const queryUrl = `${supabaseUrl}/rest/v1/transactions?select=*,products(name)&id=eq.${transaction_id}&limit=1`;
+    try {
+      const res = await fetch(queryUrl, {
+        method: 'GET',
+        headers: {
+          'apikey': supabaseServiceKey,
+          'Authorization': `Bearer ${supabaseServiceKey}`,
+        }
+      });
+      const txData = await res.json();
+      if (txData && txData.length > 0) {
+        const tx = txData[0];
+        if (tx.telegram_message_id) {
+          const productName = tx.products ? tx.products.name : 'Produk';
+          const amountFormatted = Number(tx.amount).toLocaleString('id-ID');
+          const cancelledText = `<b>🆕 PESANAN BARU MASUK</b>\n\n` +
+            `👤 <b>Nama Pembeli:</b> ${tx.buyer_name}\n` +
+            `📧 <b>Email:</b> ${tx.buyer_email}\n` +
+            `📞 <b>No. HP:</b> ${tx.buyer_phone}\n` +
+            `📦 <b>Produk:</b> ${productName}\n` +
+            `💰 <b>Total Bayar:</b> Rp ${amountFormatted}\n` +
+            `🔑 <b>ID Transaksi:</b> <code>${tx.id}</code>\n\n` +
+            `❌ <b>STATUS: DIBATALKAN OLEH PEMBELI</b>`;
+
+          const telegramUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/editMessageText`;
+          await fetch(telegramUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: TELEGRAM_CHAT_ID,
+              message_id: Number(tx.telegram_message_id),
+              text: cancelledText,
+              parse_mode: 'HTML',
+              reply_markup: { inline_keyboard: [] }
+            })
+          });
+        }
+      }
+      return {
+        statusCode: 200,
+        body: JSON.stringify({ status: 'success' }),
+      };
+    } catch (err) {
+      console.error('Error handling cancel notification:', err.message);
+      return {
+        statusCode: 500,
+        body: JSON.stringify({ error: err.message }),
+      };
+    }
+  }
+
   // 2. SKENARIO: Telegram Webhook Update (Admin menekan tombol Verifikasi/Tolak)
   if (body.callback_query) {
     const callbackQuery = body.callback_query;
