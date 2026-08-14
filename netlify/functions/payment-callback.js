@@ -70,6 +70,23 @@ export async function handler(event, context) {
   }
 
   if (!amount) {
+    // Cek apakah ini adalah request "Tes Koneksi" (biasanya tidak memiliki nominal pembayaran)
+    const isTestRequest = 
+      (rawText && /test|tes|ping|koneksi|hello|halo|notifsync/i.test(String(rawText))) ||
+      (body && body.title && /test|tes|ping|koneksi|hello|halo|notifsync/i.test(String(body.title))) ||
+      (body && body.message && /test|tes|ping|koneksi|hello|halo|notifsync/i.test(String(body.message)));
+
+    if (isTestRequest) {
+      console.log('Connection test request verified successfully.');
+      return {
+        statusCode: 200,
+        body: JSON.stringify({
+          status: 'success',
+          message: 'Connection test successful'
+        }),
+      };
+    }
+
     return {
       statusCode: 422,
       body: JSON.stringify({ error: 'Unprocessable Entity: Amount could not be resolved' }),
