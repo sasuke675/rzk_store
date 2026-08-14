@@ -560,6 +560,17 @@ function App() {
 
   return (
     <div className="app-layout">
+      {/* ================= MOBILE HEADER ================= */}
+      <header className="mobile-header">
+        <div className="mobile-header-logo">
+          <ShoppingBag size={22} />
+          <span>RZK STORE</span>
+        </div>
+        <div className="mobile-header-user">
+          {buyerName ? buyerName.charAt(0).toUpperCase() : 'U'}
+        </div>
+      </header>
+
       {/* ================= SIDEBAR MENU ================= */}
       <aside className="sidebar">
         <div className="sidebar-logo">
@@ -659,7 +670,7 @@ function App() {
                   ? 'Portal Pengelola RZK Store. Atur daftar paket produk, cek log pembayaran callback otomatis, dan kelola konfigurasi QRIS Anda.'
                   : 'Kelola pesanan produk digital Anda, cek status transaksi terbaru, atau nikmati belanja instan dari katalog kami.'}
               </p>
-              <div className="banner-welcome-actions" style={{ position: 'absolute', right: '2.5rem', bottom: '2.5rem' }}>
+              <div className="banner-welcome-actions">
                 {currentTab !== 'catalog' && !currentTab.startsWith('admin') && (
                   <button className="btn btn-secondary" style={{ background: '#fff', color: '#0066fe', border: 'none' }} onClick={() => setCurrentTab('catalog')}>
                     Jelajahi Katalog
@@ -1292,6 +1303,52 @@ function App() {
         )}
 
       </div>
+
+      {/* ================= MOBILE BOTTOM NAVIGATION ================= */}
+      <nav className="mobile-bottom-nav">
+        {!isAdminMode ? (
+          <>
+            <button 
+              className={`mobile-nav-item ${currentTab === 'catalog' ? 'active' : ''}`}
+              onClick={() => handleSidebarClick('catalog')}
+            >
+              <ShoppingCart size={20} />
+              <span>Katalog</span>
+            </button>
+            <button 
+              className={`mobile-nav-item ${currentTab === 'my-orders' ? 'active' : ''}`}
+              onClick={() => handleSidebarClick('my-orders')}
+            >
+              <History size={20} />
+              <span>Pesanan Saya</span>
+            </button>
+          </>
+        ) : (
+          <>
+            <button 
+              className={`mobile-nav-item ${currentTab === 'admin-dashboard' ? 'active' : ''}`}
+              onClick={() => handleSidebarClick('admin-dashboard')}
+            >
+              <Settings size={20} />
+              <span>Dashboard</span>
+            </button>
+            <button 
+              className={`mobile-nav-item ${currentTab === 'admin-products' ? 'active' : ''}`}
+              onClick={() => handleSidebarClick('admin-products')}
+            >
+              <Plus size={20} />
+              <span>Produk</span>
+            </button>
+            <button 
+              className={`mobile-nav-item ${currentTab === 'admin-transactions' ? 'active' : ''}`}
+              onClick={() => handleSidebarClick('admin-transactions')}
+            >
+              <History size={20} />
+              <span>Transaksi</span>
+            </button>
+          </>
+        )}
+      </nav>
     </div>
   );
 }

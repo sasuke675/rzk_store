@@ -606,26 +606,210 @@
   color: white;
 }
 
-/* Mobile responsive menu */
+/* Mobile layout header and bottom navigation default hidden */
+.mobile-header {
+  display: none;
+}
+.mobile-bottom-nav {
+  display: none;
+}
+.banner-welcome-actions {
+  position: absolute;
+  right: 2.5rem;
+  bottom: 2.5rem;
+}
+
+/* Mobile responsive layout */
 @media (max-width: 768px) {
   .sidebar {
-    width: 70px;
-    padding: 1.5rem 0.25rem;
+    display: none !important;
   }
-  .sidebar-logo h1, .sidebar-menu-label, .sidebar-item span {
-    display: none;
-  }
-  .sidebar-logo, .sidebar-item {
-    justify-content: center;
-  }
+  
   .main-content {
-    margin-left: 70px;
-    padding: 1.5rem 1rem;
+    margin-left: 0 !important;
+    padding: 1rem 1rem 6rem 1rem !important;
+    margin-top: 56px !important;
   }
+
+  /* Mobile Header */
+  .mobile-header {
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 56px;
+    background: #ffffff;
+    border-bottom: 1px solid var(--border-color);
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.25rem;
+    z-index: 500;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+  }
+  
+  .mobile-header-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 850;
+    font-size: 1.15rem;
+    color: var(--color-primary-start);
+    letter-spacing: -0.02em;
+  }
+  
+  .mobile-header-user {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #e6f0ff;
+    color: #0066fe;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 800;
+    font-size: 0.85rem;
+    border: 1.5px solid #bfdbfe;
+  }
+
+  /* Mobile Bottom Navigation */
+  .mobile-bottom-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 64px;
+    background: #ffffff;
+    border-top: 1px solid var(--border-color);
+    justify-content: space-around;
+    align-items: center;
+    z-index: 500;
+    padding-bottom: env(safe-area-inset-bottom);
+    box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.04);
+  }
+  
+  .mobile-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.7rem;
+    font-weight: 700;
+    gap: 0.3rem;
+    cursor: pointer;
+    flex: 1;
+    padding: 0.4rem 0;
+    transition: var(--transition-smooth);
+  }
+  
+  .mobile-nav-item.active {
+    color: var(--color-primary-start);
+  }
+
+  .mobile-nav-item svg {
+    transition: transform 0.2s ease;
+  }
+
+  .mobile-nav-item.active svg {
+    transform: translateY(-2px);
+  }
+
+  /* Stats Grid 2-Columns on Mobile */
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.75rem !important;
+    margin-bottom: 1.5rem !important;
+  }
+
+  .stats-card {
+    padding: 1rem 0.75rem !important;
+    gap: 0.75rem !important;
+    border-radius: 12px !important;
+  }
+
+  .stats-icon-container {
+    width: 44px !important;
+    height: 44px !important;
+    border-radius: 10px !important;
+  }
+
+  .stats-icon-container svg {
+    width: 20px !important;
+    height: 20px !important;
+  }
+
+  .stats-number {
+    font-size: 1.35rem !important;
+  }
+
+  .stats-label {
+    font-size: 0.65rem !important;
+  }
+
+  /* Banner adjustments */
   .dashboard-banner {
-    padding: 1.5rem;
+    padding: 1.5rem !important;
+    margin-bottom: 1.5rem !important;
   }
+
   .dashboard-banner h2 {
-    font-size: 1.75rem;
+    font-size: 1.5rem !important;
+  }
+
+  .dashboard-banner p {
+    font-size: 0.85rem !important;
+    margin-bottom: 1rem !important;
+    line-height: 1.4 !important;
+  }
+
+  .banner-welcome-actions {
+    position: static !important;
+    margin-top: 1rem !important;
+    display: block !important;
+  }
+
+  .banner-welcome-actions .btn {
+    width: 100% !important;
+  }
+
+  .banner-meta {
+    gap: 0.5rem !important;
+  }
+
+  .banner-meta-pill {
+    font-size: 0.75rem !important;
+    padding: 0.3rem 0.6rem !important;
+  }
+
+  /* Products Grid stacked on mobile */
+  .products-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1.25rem !important;
+  }
+
+  .premium-card {
+    padding: 1.25rem !important;
+  }
+
+  /* Modals responsive sizes */
+  .modal-content {
+    padding: 1.5rem !important;
+    max-height: 85vh !important;
+  }
+
+  .qris-amount {
+    font-size: 1.75rem !important;
+  }
+
+  .success-title {
+    font-size: 1.4rem !important;
+  }
+
+  .config-box {
+    margin: 1rem 0 !important;
+    padding: 1rem !important;
   }
 }
